@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Makmal Sains Virtual Cikgu Fareez - Sains Tahun 2: Air</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka & Quicksand mesra kanak-kanak -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+    }
+    h1, h2, h3, .font-fun {
+      font-family: 'Fredoka', cursive;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes pulse-gentle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    .animate-pulse-slow {
+      animation: pulse-gentle 2.5s ease-in-out infinite;
+    }
+    .water-bg {
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #e0f2fe;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #38bdf8;
+      border-radius: 9999px;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #certificate-card, #certificate-card * {
+        visibility: visible;
+      }
+      #certificate-card {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border: 4px solid #f59e0b !important;
+        box-shadow: none !important;
+        background-color: #fffbeb !important;
+      }
+    }
+  </style>
+</head>
+<body class="water-bg min-h-screen text-slate-800 flex flex-col antialiased selection:bg-cyan-200">
+
+  <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-sky-100">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Logo & Tajuk Makmal -->
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-cyan-400 flex items-center justify-center text-2xl shadow-md text-white animate-float">
+          💧
+        </div>
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-100 px-2 py-0.5 rounded-full">Sains Tahun 2 • Unit 9.1</span>
+          <h1 class="text-xl md:text-2xl font-bold text-sky-900 leading-tight">Makmal Sains Virtual Cikgu Fareez</h1>
+        </div>
+      </div>
+
+      <!-- Gamification HUD: Mata & Lencana -->
+      <div class="flex items-center gap-3 bg-sky-50 px-4 py-1.5 rounded-2xl border border-sky-200 shadow-inner">
+        <!-- Skor -->
+        <div class="flex items-center gap-1.5 font-bold text-sky-800">
+          <span class="text-xl">⭐</span>
+          <span id="player-score" class="text-lg">0</span> <span class="text-xs text-sky-600">Mata</span>
+        </div>
+        <div class="h-6 w-px bg-sky-200"></div>
+        <!-- Lencana -->
+        <div class="flex items-center gap-1.5 font-bold text-amber-700">
+          <span class="text-xl">🎖️</span>
+          <span id="player-badges-count" class="text-lg">0</span>/4
+        </div>
+        <div class="h-6 w-px bg-sky-200"></div>
+        <!-- Butang Audio Bunyi Sintesis -->
+        <button id="audio-toggle-btn" class="text-lg p-1.5 hover:bg-sky-200 rounded-xl transition-all" title="Buka/Tutup Kesan Bunyi">
+          🔊
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-6xl mx-auto px-4 flex overflow-x-auto gap-2 py-2 border-t border-sky-100 text-sm font-bold scrollbar-none">
+      <button onclick="switchTab('objektif')" id="tab-objektif" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 bg-sky-500 text-white shadow-sm">
+        <span>🎯</span> Objektif
+      </button>
+      <button onclick="switchTab('nota')" id="tab-nota" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 hover:bg-sky-100 text-sky-700">
+        <span>📖</span> Nota Ringkas
+      </button>
+      <button onclick="switchTab('misi')" id="tab-misi" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 hover:bg-sky-100 text-sky-700">
+        <span>🎮</span> Zon Cabaran & Misi
+      </button>
+      <button onclick="switchTab('kuiz')" id="tab-kuiz" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 hover:bg-sky-100 text-sky-700">
+        <span>🏆</span> Kuiz Pentaksiran (20)
+      </button>
+      <button onclick="switchTab('lencana')" id="tab-lencana" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 hover:bg-sky-100 text-sky-700">
+        <span>🎖️</span> Bilik Lencana
+      </button>
+      <button onclick="switchTab('skor')" id="tab-skor" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 hover:bg-sky-100 text-sky-700">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span>📊</span> Papan Skor Langsung
+      </button>
+    </div>
+  </header>
+
+  <!-- Confetti Canvas untuk Kemenangan -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6">
+
+    <section id="section-objektif" class="tab-content block">
+      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+        <div class="flex flex-col md:flex-row items-center gap-6 mb-8">
+          <div class="w-24 h-24 rounded-3xl bg-sky-100 flex items-center justify-center text-5xl shadow-inner animate-pulse-slow">
+            👨‍🏫
+          </div>
+          <div>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Selamat Datang Penjelajah Sains Cilik!</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-sky-950 mt-1">Misi Pembelajaran Sains: Topik 9.1 Air</h2>
+            <p class="text-slate-600 mt-1 text-base">Bersama Cikgu Fareez, mari kita terokai keajaiban air di bumi kita dan kumpulkan semua lencana kejuaraan sains!</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Objektif 1 -->
+          <div class="bg-gradient-to-br from-sky-50 to-blue-50 border-2 border-sky-200 rounded-2xl p-6 relative overflow-hidden shadow-sm hover:shadow-md transition">
+            <div class="absolute -right-4 -bottom-4 text-7xl opacity-15">🌊</div>
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-8 h-8 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-sm shadow">1</span>
+              <h3 class="text-lg font-bold text-sky-900">Objektif Pembelajaran 1</h3>
+            </div>
+            <p class="text-slate-700 font-semibold mb-2">Pada akhir pengembaraan ini, murid dapat:</p>
+            <ul class="space-y-2 text-sm text-slate-600 list-disc list-inside">
+              <li><strong class="text-sky-700">SP 9.1.1:</strong> Menyatakan dan mengecam 5 sumber air semula jadi iaitu <em>hujan, sungai, tasik, laut</em> dan <em>mata air</em>.</li>
+              <li><strong class="text-sky-700">SP 9.1.3:</strong> Mengitlak arah aliran air secara semula jadi dari tempat tinggi ke tempat rendah (seperti air terjun dan sungai).</li>
+            </ul>
+          </div>
+
+          <!-- Objektif 2 -->
+          <div class="bg-gradient-to-br from-cyan-50 to-emerald-50 border-2 border-cyan-200 rounded-2xl p-6 relative overflow-hidden shadow-sm hover:shadow-md transition">
+            <div class="absolute -right-4 -bottom-4 text-7xl opacity-15">🔄</div>
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-8 h-8 rounded-full bg-cyan-600 text-white font-bold flex items-center justify-center text-sm shadow">2</span>
+              <h3 class="text-lg font-bold text-cyan-900">Objektif Pembelajaran 2</h3>
+            </div>
+            <p class="text-slate-700 font-semibold mb-2">Pada akhir pengembaraan ini, murid dapat:</p>
+            <ul class="space-y-2 text-sm text-slate-600 list-disc list-inside">
+              <li><strong class="text-cyan-700">SP 9.1.4:</strong> Membuat urutan kitar air semula jadi dengan susunan fasa yang betul (Air ➔ Wap Air ➔ Awan ➔ Hujan).</li>
+              <li>Menghargai kepentingan bekalan air bersih kepada kehidupan manusia, haiwan, dan tumbuh-tumbuhan.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">💡</span>
+            <p class="text-xs sm:text-sm text-amber-900 font-medium">
+              <strong>Tip Cikgu Fareez:</strong> Lawati bahagian <strong>Nota Ringkas</strong> dahulu, kemudian uji kepintaran anda dalam <strong>Zon Cabaran</strong> untuk buka lencana sebelum menjawab <strong>Kuiz Pentaksiran</strong>!
+            </p>
+          </div>
+          <button onclick="switchTab('nota')" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow-md transition whitespace-nowrap">
+            Mula Belajar Nota ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-nota" class="tab-content hidden">
+      <div class="space-y-8">
+        
+        <!-- Header Nota -->
+        <div class="bg-white rounded-3xl p-6 shadow-md border border-sky-100 flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-sky-900">📖 Nota Ringkas Interaktif Sains Tahun 2</h2>
+            <p class="text-slate-600 text-sm">Klik pada kad interaktif di bawah untuk melihat penerangan animasi dan fakta pantas!</p>
+          </div>
+          <span class="hidden md:inline-block text-4xl">🔬</span>
+        </div>
+
+        <!-- Bahagian 9.1.1: Sumber Air Semulajadi -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+          <div class="flex items-center gap-3 mb-6 border-b border-sky-100 pb-4">
+            <span class="px-3 py-1 bg-sky-500 text-white font-bold rounded-xl text-sm">SP 9.1.1</span>
+            <h3 class="text-xl md:text-2xl font-bold text-sky-950">5 Sumber Air Semula Jadi di Bumi</h3>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- 1. Hujan -->
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 text-center hover:scale-105 transition cursor-pointer shadow-sm" onclick="showFact('Hujan', 'Titisan air yang turun dari awan ke permukaan bumi apabila awan menjadi berat dan sejuk. Hujan merupakan air tawar!')">
+              <div class="text-5xl mb-2 animate-bounce">🌧️</div>
+              <h4 class="font-bold text-sky-900 text-lg">1. Hujan</h4>
+              <p class="text-xs text-slate-600 mt-1">Air titisan dari awan turun ke bumi.</p>
+              <span class="inline-block mt-3 text-[11px] font-bold text-sky-600 bg-sky-100 px-2 py-0.5 rounded-full">Klik Info</span>
+            </div>
+
+            <!-- 2. Sungai -->
+            <div class="bg-cyan-50 border-2 border-cyan-200 rounded-2xl p-4 text-center hover:scale-105 transition cursor-pointer shadow-sm" onclick="showFact('Sungai', 'Aliran air tawar yang panjang dan mengalir secara semula jadi dari kawasan tanah tinggi menuju ke tasik atau laut.')">
+              <div class="text-5xl mb-2">🏞️</div>
+              <h4 class="font-bold text-sky-900 text-lg">2. Sungai</h4>
+              <p class="text-xs text-slate-600 mt-1">Laluan air tawar mengalir berterusan.</p>
+              <span class="inline-block mt-3 text-[11px] font-bold text-cyan-600 bg-cyan-100 px-2 py-0.5 rounded-full">Klik Info</span>
+            </div>
+
+            <!-- 3. Tasik -->
+            <div class="bg-teal-50 border-2 border-teal-200 rounded-2xl p-4 text-center hover:scale-105 transition cursor-pointer shadow-sm" onclick="showFact('Tasik', 'Kawasan takungan air yang luas dan tenang, serta dikelilingi oleh daratan. Kebanyakan tasik mengandungi air tawar.')">
+              <div class="text-5xl mb-2">🛶</div>
+              <h4 class="font-bold text-sky-900 text-lg">3. Tasik</h4>
+              <p class="text-xs text-slate-600 mt-1">Takungan air luas dikelilingi daratan.</p>
+              <span class="inline-block mt-3 text-[11px] font-bold text-teal-600 bg-teal-100 px-2 py-0.5 rounded-full">Klik Info</span>
+            </div>
+
+            <!-- 4. Laut -->
+            <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 text-center hover:scale-105 transition cursor-pointer shadow-sm" onclick="showFact('Laut', 'Kawasan air masin yang amat luas dan meliputi sebahagian besar permukaan bumi kita. Rasanya masin!')">
+              <div class="text-5xl mb-2">🌊</div>
+              <h4 class="font-bold text-sky-900 text-lg">4. Laut</h4>
+              <p class="text-xs text-slate-600 mt-1">Kawasan air masin yang sangat luas.</p>
+              <span class="inline-block mt-3 text-[11px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Klik Info</span>
+            </div>
+
+            <!-- 5. Mata Air -->
+            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 text-center hover:scale-105 transition cursor-pointer shadow-sm" onclick="showFact('Mata Air', 'Air bawah tanah yang keluar secara semula jadi ke permukaan bumi melalui celah-celah batuan. Airnya sangat jernih dan segar!')">
+              <div class="text-5xl mb-2">⛲</div>
+              <h4 class="font-bold text-sky-900 text-lg">5. Mata Air</h4>
+              <p class="text-xs text-slate-600 mt-1">Air bawah tanah keluar ke permukaan bumi.</p>
+              <span class="inline-block mt-3 text-[11px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">Klik Info</span>
+            </div>
+          </div>
+
+          <!-- Peringatan Sumber Buatan Manusia -->
+          <div class="mt-5 p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-3 text-rose-900 text-xs sm:text-sm">
+            <span class="text-2xl">⚠️</span>
+            <p><strong>Awas Keliru:</strong> Kolam renang, air paip, dan empangan adalah <em>sumber buatan manusia</em>, BUKAN sumber air semula jadi!</p>
+          </div>
+        </div>
+
+        <!-- Bahagian 9.1.3: Arah Aliran Air -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+          <div class="flex items-center gap-3 mb-6 border-b border-sky-100 pb-4">
+            <span class="px-3 py-1 bg-amber-500 text-white font-bold rounded-xl text-sm">SP 9.1.3</span>
+            <h3 class="text-xl md:text-2xl font-bold text-sky-950">Arah Aliran Air Semula Jadi</h3>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 items-center">
+            <div class="space-y-4">
+              <div class="p-4 bg-sky-50 rounded-2xl border-l-4 border-sky-500">
+                <h4 class="font-bold text-sky-900 text-lg">Prinsip Emas Graviti:</h4>
+                <p class="text-slate-700 text-base mt-1">
+                  Air mengalir secara semula jadi dari <span class="bg-amber-200 text-amber-900 font-extrabold px-2 py-0.5 rounded">TEMPAT TINGGI</span> ke <span class="bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded">TEMPAT RENDAH</span>!
+                </p>
+              </div>
+              <ul class="space-y-2 text-sm text-slate-600">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 text-lg">✔</span>
+                  <span><strong>Air Terjun:</strong> Air jatuh menjunam dari tebing bukit yang tinggi ke kolam di bawahnya.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 text-lg">✔</span>
+                  <span><strong>Sungai:</strong> Bermula dari hulu gunung (tinggi) dan mengalir turun merentasi lembah sehingga ke muara laut (rendah).</span>
+                </li>
+              </ul>
+              <button onclick="playWaterSlide()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow transition text-sm flex items-center gap-2">
+                <span>💦</span> Lihat Simulasi Aliran Air
+              </button>
+            </div>
+
+            <!-- Interaktif Visual Bukit ke Lembah -->
+            <div class="relative bg-gradient-to-b from-sky-200 via-sky-100 to-emerald-100 p-6 rounded-3xl border-2 border-sky-300 overflow-hidden h-64 flex flex-col justify-between">
+              <div class="flex justify-between items-center text-xs font-bold">
+                <span class="bg-red-500 text-white px-3 py-1 rounded-full shadow">⛰️ Kawasan Tinggi (Hulu/Bukit)</span>
+                <span class="text-slate-500">Graviti ⬇️</span>
+              </div>
+              
+              <!-- Titisan Animasi -->
+              <div id="water-droplet-sim" class="absolute left-8 top-12 text-3xl transition-all duration-1000 ease-in-out">
+                💧
+              </div>
+
+              <!-- Laluan Curam -->
+              <div class="w-full h-2 bg-sky-400 rotate-12 rounded-full my-auto opacity-75 shadow-sm"></div>
+
+              <div class="flex justify-between items-end text-xs font-bold">
+                <span class="text-slate-500">Aliran Turun ➔</span>
+                <span class="bg-blue-600 text-white px-3 py-1 rounded-full shadow">🌊 Kawasan Rendah (Laut/Muara)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bahagian 9.1.4: Kitar Air Semula Jadi -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+          <div class="flex items-center gap-3 mb-6 border-b border-sky-100 pb-4">
+            <span class="px-3 py-1 bg-emerald-500 text-white font-bold rounded-xl text-sm">SP 9.1.4</span>
+            <h3 class="text-xl md:text-2xl font-bold text-sky-950">Kitar Air Semula Jadi (Pusingan Ajaib)</h3>
+          </div>
+
+          <p class="text-slate-700 text-sm mb-6">
+            Kitaran air berlaku secara berulang-ulang tanpa henti untuk memastikan bekalan air di muka bumi sentiasa kekal!
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+            <!-- Langkah 1 -->
+            <div class="bg-orange-50 border-2 border-orange-200 rounded-2xl p-4 text-center">
+              <div class="text-4xl mb-2">☀️ ➔ 💧</div>
+              <span class="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Langkah 1</span>
+              <h4 class="font-bold text-slate-800 mt-2">Pemanasan Air</h4>
+              <p class="text-xs text-slate-600 mt-1">Matahari memanaskan air di laut, sungai dan tasik.</p>
+            </div>
+
+            <!-- Langkah 2 -->
+            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-center">
+              <div class="text-4xl mb-2">♨️ ➔ ☁️</div>
+              <span class="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Langkah 2</span>
+              <h4 class="font-bold text-slate-800 mt-2">Menjadi Wap Air</h4>
+              <p class="text-xs text-slate-600 mt-1">Air menyejat naik ke udara menjadi wap air yang ringan.</p>
+            </div>
+
+            <!-- Langkah 3 -->
+            <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 text-center">
+              <div class="text-4xl mb-2">☁️ ➔ 🌧️</div>
+              <span class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Langkah 3</span>
+              <h4 class="font-bold text-slate-800 mt-2">Pembentukan Awan</h4>
+              <p class="text-xs text-slate-600 mt-1">Wap air menyejuk di atas dan terkondensasi membentuk titisan awan.</p>
+            </div>
+
+            <!-- Langkah 4 -->
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
+              <div class="text-4xl mb-2">🌧️ ➔ 🌊</div>
+              <span class="bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Langkah 4</span>
+              <h4 class="font-bold text-slate-800 mt-2">Turunnya Hujan</h4>
+              <p class="text-xs text-slate-600 mt-1">Awan menjadi berat dan turun sebagai hujan mengalir semula ke bumi.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="section-misi" class="tab-content hidden">
+      <div class="space-y-8">
+        
+        <div class="bg-white rounded-3xl p-6 shadow-md border border-sky-100 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-sky-950">🎮 Zon Cabaran Sains Interaktif</h2>
+            <p class="text-slate-600 text-sm">Selesaikan 3 Misi Cabaran untuk mengumpul mata bonus dan membuka lencana eksklusif Cikgu Fareez!</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-sky-800 bg-sky-100 px-3 py-1 rounded-full">3 Misi Menanti Anda</span>
+          </div>
+        </div>
+
+        <!-- MISI 1: PENGKELASAN SUMBER AIR -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-2xl bg-sky-500 text-white font-bold flex items-center justify-center shadow">M1</span>
+              <div>
+                <h3 class="text-xl font-bold text-sky-900">Misi 1: Kenal Pasti Sumber Air Semula Jadi</h3>
+                <p class="text-xs text-slate-500">Pilih SEMUA sumber yang merupakan sumber air semula jadi!</p>
+              </div>
+            </div>
+            <span id="misi1-status" class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-full">Belum Selesai</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-6">
+            <!-- 6 Kad Pilihan -->
+            <button onclick="toggleMisi1Card(this, true)" class="misi1-card p-3 border-2 border-slate-200 rounded-2xl text-center hover:border-sky-400 transition bg-slate-50 flex flex-col items-center gap-2" data-item="Hujan">
+              <span class="text-3xl">🌧️</span>
+              <span class="text-xs font-bold">Hujan</span>
+            </button>
+            <button onclick="toggleMisi1Card(this, false)" class="misi1-card p-3 border-2 border-slate-200 rounded-2xl text-center hover:border-sky-400 transition bg-slate-50 flex flex-col items-center gap-2" data-item="Kolam Renang">
+              <span class="text-3xl">🏊</span>
+              <span class="text-xs font-bold">Kolam Renang</span>
+            </button>
+            <button onclick="toggleMisi1Card(this, true)" class="misi1-card p-3 border-2 border-slate-200 rounded-2xl text-center hover:border-sky-400 transition bg-slate-50 flex flex-col items-center gap-2" data-item="Sungai">
+              <span class="text-3xl">🏞️</span>
+              <span class="text-xs font-bold">Sungai</span>
+            </button>
+            <button onclick="toggleMisi1Card(this, false)" class="misi1-card p-3 border-2 border-slate-200 rounded-2xl text-center hover:border-sky-400 transition bg-slate-50 flex flex-col items-center gap-2" data-item="Paip Sinki">
+              <span class="text-3xl">🚰</span>
+              <span class="text-xs font-bold">Paip Rumah</span>
+            </button>
+            <button onclick="toggleMisi1Card(this, true)" class="misi1-card p-3 border-2 border-slate-200 rounded-2xl text-center hover:border-sky-400 transition bg-slate-50 flex flex-col items-center gap-2" data-item="Laut">
+              <span class="text-3xl">🌊</span>
+              <span class="text-xs font-bold">Laut</span>
+            </button>
+            <button onclick="toggleMisi1Card(this, true)" class="misi1-card p-3 border-2 border-slate-200 rounded-2xl text-center hover:border-sky-400 transition bg-slate-50 flex flex-col items-center gap-2" data-item="Mata Air">
+              <span class="text-3xl">⛲</span>
+              <span class="text-xs font-bold">Mata Air</span>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <span class="text-xs text-slate-500">Pilih 4 sumber semula jadi yang betul di atas.</span>
+            <button onclick="checkMisi1()" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow transition text-sm">
+              Semak Pilihan Misi 1 🔍
+            </button>
+          </div>
+          <div id="misi1-feedback" class="mt-3 text-sm hidden font-bold p-3 rounded-xl"></div>
+        </div>
+
+        <!-- MISI 2: TEKA ARAH ALIRAN AIR -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-2xl bg-amber-500 text-white font-bold flex items-center justify-center shadow">M2</span>
+              <div>
+                <h3 class="text-xl font-bold text-sky-900">Misi 2: Arah Pelayaran Bot Kertas</h3>
+                <p class="text-xs text-slate-500">Cikgu Fareez meletakkan bot kertas di hulu sungai bukit. Ke manakah bot itu akan hanyut?</p>
+              </div>
+            </div>
+            <span id="misi2-status" class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-full">Belum Selesai</span>
+          </div>
+
+          <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-2xl border border-sky-200 mb-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+              <div class="text-5xl mb-2">⛵⛰️ ➔ 🌊</div>
+              <p class="text-sm font-bold text-slate-700">Bot diletakkan di puncak air terjun tanah tinggi.</p>
+              <p class="text-xs text-slate-500">Air mengalir mengikut hukum graviti bumi.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <button onclick="answerMisi2('A')" class="misi2-btn px-4 py-3 bg-white hover:bg-sky-50 border-2 border-sky-200 rounded-xl font-bold text-sm text-sky-900 text-left transition flex items-center gap-2">
+                <span>⬆️</span> Mengalir naik ke puncak awan
+              </button>
+              <button onclick="answerMisi2('B')" class="misi2-btn px-4 py-3 bg-white hover:bg-sky-50 border-2 border-sky-200 rounded-xl font-bold text-sm text-sky-900 text-left transition flex items-center gap-2">
+                <span>⬇️</span> Mengalir turun ke tempat rendah / muara
+              </button>
+            </div>
+          </div>
+          <div id="misi2-feedback" class="text-sm hidden font-bold p-3 rounded-xl"></div>
+        </div>
+
+        <!-- MISI 3: SUSUN KITAR AIR SEMULA JADI -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-2xl bg-emerald-500 text-white font-bold flex items-center justify-center shadow">M3</span>
+              <div>
+                <h3 class="text-xl font-bold text-sky-900">Misi 3: Susun Urutan Kitar Air Ajaib</h3>
+                <p class="text-xs text-slate-500">Susun 4 fasa kitaran air mengikut urutan yang betul (Klik ikut nombor 1 hingga 4)!</p>
+              </div>
+            </div>
+            <span id="misi3-status" class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-full">Belum Selesai</span>
+          </div>
+
+          <!-- Bekas Kad Urutan -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4" id="misi3-cards-container">
+            <!-- Cards will be populated by JS -->
+          </div>
+
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <button onclick="resetMisi3()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition">
+              🔄 Tetapkan Semula Pilihan
+            </button>
+            <button onclick="checkMisi3()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow transition text-sm">
+              Semak Urutan Kitar Air 🚀
+            </button>
+          </div>
+          <div id="misi3-feedback" class="mt-3 text-sm hidden font-bold p-3 rounded-xl"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="section-kuiz" class="tab-content hidden">
+      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+        
+        <!-- Header Kuiz -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-sky-100">
+          <div>
+            <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Pentaksiran Bilik Darjah (PBD)</span>
+            <h2 class="text-2xl font-bold text-sky-950 mt-1">Kuiz Cabaran Minda 20 Soalan: Air</h2>
+            <p class="text-xs sm:text-sm text-slate-600">Jawab semua 20 soalan untuk melihat gred dan mencetak Sijil Digital Cikgu Fareez.</p>
+          </div>
+          <div class="text-center bg-purple-50 border border-purple-200 px-4 py-2 rounded-2xl">
+            <span class="text-xs text-purple-700 font-bold block">Soalan Semasa</span>
+            <span id="quiz-progress-text" class="text-xl font-extrabold text-purple-900">1 / 20</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 rounded-full h-3 my-6 overflow-hidden">
+          <div id="quiz-progress-bar" class="bg-gradient-to-r from-sky-400 to-purple-500 h-3 rounded-full transition-all duration-300" style="width: 5%"></div>
+        </div>
+
+        <!-- Kotak Soalan Aktif -->
+        <div id="quiz-question-box" class="space-y-6">
+          <div class="bg-sky-50 border border-sky-200 rounded-2xl p-5">
+            <span id="quiz-q-topic" class="text-[11px] font-bold tracking-wider text-sky-600 uppercase bg-sky-200/60 px-2 py-0.5 rounded-md">Topik</span>
+            <h3 id="quiz-question-title" class="text-lg md:text-xl font-bold text-slate-800 mt-2">Memuatkan soalan...</h3>
+          </div>
+
+          <!-- Senarai Pilihan Jawapan -->
+          <div id="quiz-options-container" class="grid gap-3">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Penerangan Jawapan Selepas Klik -->
+          <div id="quiz-explanation" class="hidden p-4 rounded-2xl text-sm font-semibold border"></div>
+
+          <!-- Navigasi Kuiz -->
+          <div class="flex items-center justify-between pt-4">
+            <button id="quiz-prev-btn" onclick="prevQuizQuestion()" class="px-4 py-2 rounded-xl border border-slate-300 font-bold text-sm text-slate-600 hover:bg-slate-100 transition disabled:opacity-40" disabled>
+              ⬅️ Kembali
+            </button>
+            <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow transition text-sm disabled:opacity-40" disabled>
+              Soalan Seterusnya ➡️
+            </button>
+          </div>
+        </div>
+
+        <!-- Keputusan Kuiz & Sijil (Disembunyikan mula-mula) -->
+        <div id="quiz-result-box" class="hidden text-center py-8 space-y-6">
+          <div class="text-6xl animate-bounce" id="quiz-result-emoji">🎉</div>
+          <div>
+            <h3 class="text-2xl md:text-3xl font-bold text-sky-950">Tahniah! Anda Telah Menyelesaikan Pentaksiran!</h3>
+            <p class="text-slate-600 text-sm mt-1" id="quiz-result-msg">Berikut adalah ringkasan prestasi sains anda:</p>
+          </div>
+
+          <div class="inline-flex items-center gap-6 bg-gradient-to-r from-sky-50 to-blue-50 border-2 border-sky-300 px-8 py-4 rounded-3xl shadow-sm">
+            <div>
+              <span class="text-xs font-bold text-sky-600 uppercase">Skor Kuiz</span>
+              <div class="text-4xl font-black text-sky-900"><span id="quiz-final-score">0</span> / 20</div>
+            </div>
+            <div class="h-10 w-px bg-sky-200"></div>
+            <div>
+              <span class="text-xs font-bold text-sky-600 uppercase">Tahap Penguasaan (TP)</span>
+              <div class="text-2xl font-black text-emerald-600" id="quiz-tp-level">TP 6</div>
+            </div>
+          </div>
+
+          <!-- Sijil Penghargaan Maya -->
+          <div id="certificate-card" class="max-w-xl mx-auto bg-amber-50 border-4 border-amber-300 rounded-3xl p-6 shadow-xl relative overflow-hidden text-center">
+            <div class="absolute top-2 left-2 text-3xl">🏅</div>
+            <div class="absolute top-2 right-2 text-3xl">💧</div>
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-200 px-3 py-1 rounded-full">Sijil Kejayaan Digital</span>
+            <h4 class="text-xl md:text-2xl font-bold text-amber-950 mt-3 font-fun">Makmal Sains Virtual Cikgu Fareez</h4>
+            <p class="text-xs text-slate-600 mt-1">Dengan ini memperakui bahawa wira cilik ini:</p>
+            
+            <div class="my-3">
+              <input type="text" id="cert-student-name" placeholder="Tuliskan Nama Anda Di Sini" class="text-center font-bold text-lg md:text-xl text-sky-900 bg-white border-2 border-amber-300 rounded-xl px-4 py-1.5 w-full max-w-sm focus:outline-none focus:border-sky-500 shadow-inner">
+            </div>
+
+            <p class="text-xs text-slate-700 max-w-md mx-auto">
+              Telah berjaya menguasai tajuk <strong>Sains Tahun 2: Unit 9.1 Air</strong> merangkumi Sumber Air Semulajadi, Arah Aliran Air, dan Kitar Air Semulajadi.
+            </p>
+            <div class="mt-4 pt-3 border-t border-amber-200 flex items-center justify-between text-xs text-slate-500 px-4">
+              <span>Tarikh: <strong id="cert-date">Hari Ini</strong></span>
+              <span>Guru Pembimbing: <strong>Cikgu Fareez</strong></span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
+            <button onclick="downloadCertificateImage()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition transform active:scale-95 text-sm md:text-base flex items-center gap-2">
+              📸 Muat Turun Sijil (Imej PNG)
+            </button>
+            <button onclick="window.print()" class="px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow transition text-sm flex items-center gap-2">
+              🖨️ Cetak Sijil
+            </button>
+            <button id="send-live-score-btn" onclick="submitCurrentScoreToLeaderboard()" class="px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg transition text-sm flex items-center gap-2 transform active:scale-95">
+              <span>🚀</span> Hantar ke Papan Skor Langsung
+            </button>
+            <button onclick="restartQuiz()" class="px-5 py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-2xl shadow transition text-sm flex items-center gap-2">
+              🔄 Cuba Kuiz Semula
+            </button>
+          </div>
+          <!-- Status Notis Hantaran -->
+          <div id="live-submit-notice" class="hidden max-w-md mx-auto p-3 rounded-2xl text-xs font-bold text-center"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Seksyen Papan Skor Langsung Real-time -->
+    <section id="section-skor" class="tab-content hidden">
+      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100 space-y-6">
+        
+        <!-- Header Skor & Status Sambungan Langsung -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-sky-100 pb-5">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 flex items-center gap-1.5">
+                <span class="relative flex h-2 w-2">
+                  <span id="live-ping-dot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span id="live-status-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span id="live-status-text">Siaran Langsung Aktif</span>
+              </span>
+              <span class="text-xs text-slate-400">• Segerak Automatik</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-sky-950 font-fun">📊 Papan Skor Langsung Makmal Sains</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Pantau pencapaian rakan sekelas dan rekod markah murid secara langsung!</p>
+          </div>
+
+          <div class="flex items-center gap-2 self-stretch md:self-auto justify-end">
+            <button onclick="switchTab('kuiz')" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs sm:text-sm shadow transition flex items-center gap-1.5">
+              <span>✍️</span> Masuk Pentaksiran
+            </button>
+          </div>
+        </div>
+
+        <!-- Kad Ringkasan Guru (Teacher Dashboard Analytics) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-gradient-to-br from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-4 text-center">
+            <span class="text-xs font-bold text-sky-700 uppercase">Jumlah Murid</span>
+            <div id="stat-total-students" class="text-2xl sm:text-3xl font-black text-sky-950 mt-1">0</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">Telah hantar rekod</p>
+          </div>
+          <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 text-center">
+            <span class="text-xs font-bold text-emerald-700 uppercase">Purata Kuiz</span>
+            <div id="stat-avg-score" class="text-2xl sm:text-3xl font-black text-emerald-950 mt-1">0 <span class="text-sm font-normal text-slate-500">/ 20</span></div>
+            <p class="text-[11px] text-slate-500 mt-0.5">Skor purata kelas</p>
+          </div>
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 text-center">
+            <span class="text-xs font-bold text-amber-700 uppercase">Penguasaan Tinggi</span>
+            <div id="stat-tp6-count" class="text-2xl sm:text-3xl font-black text-amber-950 mt-1">0</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">Capai TP 5 & TP 6</p>
+          </div>
+          <div class="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-4 text-center">
+            <span class="text-xs font-bold text-purple-700 uppercase">Juara Kelas</span>
+            <div id="stat-top-scorer" class="text-base sm:text-lg font-bold text-purple-950 mt-2 truncate px-1">-</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">Mata tertinggi</p>
+          </div>
+        </div>
+
+        <!-- Carian & Penapis Murid (Memudahkan Cikgu Semak) -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          <div class="relative w-full sm:w-72">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-sm">🔍</span>
+            <input type="text" id="scoreboard-search" oninput="filterScoreboardList()" placeholder="Cari nama murid..." class="w-full pl-9 pr-3 py-2 bg-white rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-500 shadow-sm">
+          </div>
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1 self-end sm:self-auto">
+            <span>Disusun mengikut:</span>
+            <span class="font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded-lg">Skor Tertinggi ⬇️</span>
+          </div>
+        </div>
+
+        <!-- Senarai Jadual Papan Skor -->
+        <div class="overflow-x-auto rounded-2xl border border-sky-100 shadow-sm">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-sky-500 text-white uppercase text-[11px] tracking-wider">
+              <tr>
+                <th class="py-3 px-4 text-center w-16">Kedudukan</th>
+                <th class="py-3 px-4">Nama Murid</th>
+                <th class="py-3 px-3 text-center">Mata (⭐)</th>
+                <th class="py-3 px-3 text-center">Kuiz (/20)</th>
+                <th class="py-3 px-3 text-center">Tahap (TP)</th>
+                <th class="py-3 px-3 text-center">Lencana</th>
+                <th class="py-3 px-4 text-right">Tarikh & ID Murid</th>
+              </tr>
+            </thead>
+            <tbody id="scoreboard-table-body" class="divide-y divide-slate-100 bg-white">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-400">
+                  <div class="text-3xl mb-1 animate-bounce">⏳</div>
+                  <p class="font-semibold">Menghubungkan ke Papan Skor Langsung...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="section-lencana" class="tab-content hidden">
+      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-sky-100">
+        <div class="text-center max-w-lg mx-auto mb-8">
+          <div class="text-5xl mb-2">🏆</div>
+          <h2 class="text-2xl md:text-3xl font-bold text-sky-950">Bilik Lencana & Anugerah</h2>
+          <p class="text-slate-600 text-sm mt-1">Setiap kali anda menyelesaikan misi dan kuiz, lencana istimewa di bawah akan diaktifkan!</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Lencana 1 -->
+          <div id="badge-card-1" class="border-2 border-dashed border-slate-300 rounded-3xl p-6 text-center opacity-40 transition-all bg-slate-50 flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-sky-100 flex items-center justify-center text-4xl mb-3 shadow-inner">
+              🔍
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Peneroka Sumber Air</h4>
+            <p class="text-xs text-slate-500 mt-1">Selesaikan Misi 1 dengan mengenal pasti semua sumber semula jadi.</p>
+            <span class="badge-status text-[11px] font-bold mt-4 px-3 py-1 bg-slate-200 text-slate-600 rounded-full">Terkunci 🔒</span>
+          </div>
+
+          <!-- Lencana 2 -->
+          <div id="badge-card-2" class="border-2 border-dashed border-slate-300 rounded-3xl p-6 text-center opacity-40 transition-all bg-slate-50 flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center text-4xl mb-3 shadow-inner">
+              ⛵
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Kapten Aliran Air</h4>
+            <p class="text-xs text-slate-500 mt-1">Selesaikan Misi 2 dengan mengitlak arah aliran tinggi ke rendah.</p>
+            <span class="badge-status text-[11px] font-bold mt-4 px-3 py-1 bg-slate-200 text-slate-600 rounded-full">Terkunci 🔒</span>
+          </div>
+
+          <!-- Lencana 3 -->
+          <div id="badge-card-3" class="border-2 border-dashed border-slate-300 rounded-3xl p-6 text-center opacity-40 transition-all bg-slate-50 flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center text-4xl mb-3 shadow-inner">
+              🔄
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Pakar Kitaran Air</h4>
+            <p class="text-xs text-slate-500 mt-1">Selesaikan Misi 3 dengan menyusun 4 fasa kitaran semula jadi.</p>
+            <span class="badge-status text-[11px] font-bold mt-4 px-3 py-1 bg-slate-200 text-slate-600 rounded-full">Terkunci 🔒</span>
+          </div>
+
+          <!-- Lencana 4 -->
+          <div id="badge-card-4" class="border-2 border-dashed border-slate-300 rounded-3xl p-6 text-center opacity-40 transition-all bg-slate-50 flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center text-4xl mb-3 shadow-inner">
+              👑
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Juara Sains Sejati</h4>
+            <p class="text-xs text-slate-500 mt-1">Capai sekurang-kurangnya 16/20 soalan betul dalam Pentaksiran Akhir.</p>
+            <span class="badge-status text-[11px] font-bold mt-4 px-3 py-1 bg-slate-200 text-slate-600 rounded-full">Terkunci 🔒</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Dialog Modal Info Pop-up (No browser alert) -->
+  <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-sky-100 text-center animate-pulse-slow">
+      <div id="modal-icon" class="text-5xl mb-3">💧</div>
+      <h3 id="modal-title" class="text-xl font-bold text-sky-950 mb-2">Maklumat Sains</h3>
+      <p id="modal-desc" class="text-slate-600 text-sm mb-5 leading-relaxed">Penerangan ringkas di sini.</p>
+      <button onclick="closeModal()" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow-md transition">
+        Faham & Teruskan! 👍
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Pratonton Imej Sijil Khas untuk Pengguna Telefon Pintar -->
+  <div id="cert-image-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-amber-300 text-center space-y-4 my-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="text-left">
+          <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <span>🎉</span> Sijil Sedia Dimuat Turun!
+          </h3>
+          <p class="text-xs text-slate-500">Imej rasmi untuk disimpan ke album telefon murid.</p>
+        </div>
+        <button onclick="closeCertModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Paparan Imej Hasil Lukisan Canvas -->
+      <div class="rounded-2xl overflow-hidden border-2 border-amber-300 shadow-md bg-amber-50">
+        <img id="generated-cert-img" src="" alt="Sijil Sains Cikgu Fareez" class="w-full h-auto object-contain block">
+      </div>
+
+      <!-- Tip Simpan Mesra Telefon Pintar -->
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-left flex items-start gap-3 text-xs text-amber-900">
+        <span class="text-2xl">📱</span>
+        <div>
+          <strong>Pengguna Telefon Pintar:</strong> Jika fail imej tidak termuat turun sendiri, <em>tekan dan tahan (long press)</em> pada gambar sijil di atas, kemudian pilih <strong>"Simpan Imej" (Save Image)</strong> ke dalam galeri telefon anda.
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center gap-3 flex-wrap pt-1">
+        <a id="cert-download-link" href="#" download="Sijil_Sains_Tahun2_CikguFareez.png" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow transition text-sm flex items-center gap-2">
+          📥 Muat Turun Sekali Lagi
+        </a>
+        <button onclick="closeCertModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-sm transition">
+          Selesai / Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white/80 border-t border-sky-200 py-4 mt-8 text-center text-xs text-slate-500">
+    <p>Dicipta untuk PdPc Sains Tahun 2 (KSSR Semakan) • <strong>Makmal Sains Virtual Cikgu Fareez</strong></p>
+    <p class="mt-0.5 text-sky-600">Unit 9.1: Sumber Air, Arah Aliran Air & Kitar Air Semulajadi</p>
+  </footer>
+
+  <script>
+    // State Aplikasi
+    let currentScore = 0;
+    let earnedBadges = new Set();
+    let audioEnabled = true;
+
+    // Web Audio API Synthesizer (Tanpa sebarang fail mp3 luar)
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!audioEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'correct') {
+          // Melodi ceria
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          // Bunyi rendah
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'badge') {
+          // Fanfare ringkas
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(554.37, now + 0.1);
+          osc.frequency.setValueAtTime(659.25, now + 0.2);
+          osc.frequency.setValueAtTime(880, now + 0.3);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+          osc.start(now);
+          osc.stop(now + 0.6);
+        } else if (type === 'pop') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        }
+      } catch (e) {
+        console.warn("Audio Context not allowed yet:", e);
+      }
+    }
+
+    // Toggle Audio
+    document.getElementById('audio-toggle-btn').addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      document.getElementById('audio-toggle-btn').textContent = audioEnabled ? '🔊' : '🔇';
+    });
+
+    // Update Mata
+    function addPoints(pts) {
+      currentScore += pts;
+      document.getElementById('player-score').textContent = currentScore;
+    }
+
+    function unlockBadge(badgeIndex) {
+      if (earnedBadges.has(badgeIndex)) return;
+      earnedBadges.add(badgeIndex);
+      document.getElementById('player-badges-count').textContent = earnedBadges.size;
+      
+      const badgeCard = document.getElementById(`badge-card-${badgeIndex}`);
+      if (badgeCard) {
+        badgeCard.classList.remove('opacity-40', 'border-dashed', 'border-slate-300', 'bg-slate-50');
+        badgeCard.classList.add('border-solid', 'border-amber-400', 'bg-gradient-to-b', 'from-amber-50', 'to-white', 'shadow-lg');
+        const statusSpan = badgeCard.querySelector('.badge-status');
+        if (statusSpan) {
+          statusSpan.classList.remove('bg-slate-200', 'text-slate-600');
+          statusSpan.classList.add('bg-emerald-500', 'text-white');
+          statusSpan.textContent = 'Dibuka! ⭐';
+        }
+      }
+      playSound('badge');
+      triggerConfetti();
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      playSound('pop');
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-sky-500', 'text-white', 'shadow-sm');
+        btn.classList.add('hover:bg-sky-100', 'text-sky-700');
+      });
+
+      const activeSection = document.getElementById(`section-${tabId}`);
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      if (activeSection) activeSection.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('bg-sky-500', 'text-white', 'shadow-sm');
+        activeBtn.classList.remove('hover:bg-sky-100', 'text-sky-700');
+      }
+    }
+
+    // Modal Helper
+    function showFact(title, desc) {
+      playSound('pop');
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('custom-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      playSound('pop');
+      document.getElementById('custom-modal').classList.add('hidden');
+    }
+
+    // Simulasi Gerakan Air (Tab Nota)
+    function playWaterSlide() {
+      playSound('pop');
+      const drop = document.getElementById('water-droplet-sim');
+      drop.style.left = '85%';
+      drop.style.top = '70%';
+      setTimeout(() => {
+        drop.style.left = '2rem';
+        drop.style.top = '3rem';
+      }, 1500);
+    }
+
+    let selectedMisi1 = new Set();
+    function toggleMisi1Card(btn, isNatural) {
+      playSound('pop');
+      const item = btn.getAttribute('data-item');
+      if (selectedMisi1.has(item)) {
+        selectedMisi1.delete(item);
+        btn.classList.remove('border-sky-500', 'bg-sky-100', 'text-sky-900');
+        btn.classList.add('border-slate-200', 'bg-slate-50');
+      } else {
+        selectedMisi1.add(item);
+        btn.classList.add('border-sky-500', 'bg-sky-100', 'text-sky-900');
+        btn.classList.remove('border-slate-200', 'bg-slate-50');
+      }
+    }
+
+    function checkMisi1() {
+      const feedback = document.getElementById('misi1-feedback');
+      feedback.classList.remove('hidden');
+
+      // Sumber semula jadi: Hujan, Sungai, Laut, Mata Air (4 item)
+      const correctItems = ['Hujan', 'Sungai', 'Laut', 'Mata Air'];
+      const hasFake = selectedMisi1.has('Kolam Renang') || selectedMisi1.has('Paip Sinki');
+      const countCorrect = correctItems.filter(item => selectedMisi1.has(item)).length;
+
+      if (!hasFake && countCorrect === 4 && selectedMisi1.size === 4) {
+        playSound('correct');
+        feedback.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300";
+        feedback.innerHTML = "🎉 Cemerlang! Anda berjaya mengenal pasti semua 4 sumber air semula jadi! (+50 Mata)";
+        document.getElementById('misi1-status').className = "text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full";
+        document.getElementById('misi1-status').textContent = "Selesai ⭐";
+        addPoints(50);
+        unlockBadge(1);
+      } else {
+        playSound('wrong');
+        feedback.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-rose-100 text-rose-800 border border-rose-300";
+        feedback.innerHTML = "❌ Masih kurang tepat. Pastikan hanya pilih SUMBER SEMULA JADI (Kolam renang & paip adalah buatan manusia!). Sila cuba lagi.";
+      }
+    }
+
+    function answerMisi2(choice) {
+      const feedback = document.getElementById('misi2-feedback');
+      feedback.classList.remove('hidden');
+
+      if (choice === 'B') {
+        playSound('correct');
+        feedback.className = "text-sm font-bold p-3 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300";
+        feedback.innerHTML = "🎯 Tepat sekali! Air sentiasa mengalir dari TEMPAT TINGGI ke TEMPAT RENDAH kerana daya graviti bumi! Bot akan hanyut ke muara laut. (+50 Mata)";
+        document.getElementById('misi2-status').className = "text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full";
+        document.getElementById('misi2-status').textContent = "Selesai ⭐";
+        addPoints(50);
+        unlockBadge(2);
+      } else {
+        playSound('wrong');
+        feedback.className = "text-sm font-bold p-3 rounded-xl bg-rose-100 text-rose-800 border border-rose-300";
+        feedback.innerHTML = "❌ Tidak betul. Mengikut arah aliran semula jadi, air tidak boleh mengalir naik sendiri ke puncak awan tanpa dipanaskan menjadi wap air. Cuba lagi!";
+      }
+    }
+
+    const misi3StepsData = [
+      { id: 1, text: "1. Air di laut & sungai dipanaskan matahari", icon: "☀️" },
+      { id: 2, text: "2. Air menyejat naik menjadi Wap Air", icon: "♨️" },
+      { id: 3, text: "3. Wap air menyejuk membentuk Awan", icon: "☁️" },
+      { id: 4, text: "4. Awan menjadi berat lalu turun sebagai Hujan", icon: "🌧️" }
+    ];
+
+    let userMisi3Sequence = [];
+    let shuffledMisi3 = [];
+
+    function initMisi3() {
+      shuffledMisi3 = [...misi3StepsData].sort(() => Math.random() - 0.5);
+      renderMisi3Cards();
+    }
+
+    function renderMisi3Cards() {
+      const container = document.getElementById('misi3-cards-container');
+      container.innerHTML = '';
+
+      shuffledMisi3.forEach((item) => {
+        const isChosen = userMisi3Sequence.includes(item.id);
+        const orderIndex = userMisi3Sequence.indexOf(item.id) + 1;
+
+        const card = document.createElement('div');
+        card.className = `p-4 border-2 rounded-2xl cursor-pointer transition select-none flex flex-col items-center text-center ${
+          isChosen ? 'border-emerald-500 bg-emerald-50 text-emerald-950 shadow-sm' : 'border-slate-200 bg-slate-50 hover:border-sky-400'
+        }`;
+        card.onclick = () => selectMisi3Step(item.id);
+
+        card.innerHTML = `
+          <div class="text-3xl mb-1">${item.icon}</div>
+          <span class="text-xs font-bold">${item.text}</span>
+          ${isChosen ? `<span class="mt-2 text-xs font-black bg-emerald-500 text-white px-2 py-0.5 rounded-full">Langkah ${orderIndex}</span>` : '<span class="mt-2 text-[11px] text-slate-400 font-bold">Tekan untuk pilih</span>'}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function selectMisi3Step(id) {
+      playSound('pop');
+      if (userMisi3Sequence.includes(id)) {
+        // batalkan pilihan terakhir jika klik semula
+        userMisi3Sequence = userMisi3Sequence.filter(item => item !== id);
+      } else {
+        if (userMisi3Sequence.length < 4) {
+          userMisi3Sequence.push(id);
+        }
+      }
+      renderMisi3Cards();
+    }
+
+    function resetMisi3() {
+      playSound('pop');
+      userMisi3Sequence = [];
+      renderMisi3Cards();
+      document.getElementById('misi3-feedback').classList.add('hidden');
+    }
+
+    function checkMisi3() {
+      const feedback = document.getElementById('misi3-feedback');
+      feedback.classList.remove('hidden');
+
+      if (userMisi3Sequence.length < 4) {
+        playSound('wrong');
+        feedback.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-amber-100 text-amber-800 border border-amber-300";
+        feedback.innerHTML = "⚠️ Sila pilih kesemua 4 langkah mengikut urutan terlebih dahulu.";
+        return;
+      }
+
+      const isCorrect = userMisi3Sequence.every((val, index) => val === index + 1);
+
+      if (isCorrect) {
+        playSound('correct');
+        feedback.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300";
+        feedback.innerHTML = "🌟 Tahniah! Urutan kitar air anda sangat sempurna: Air ➔ Wap Air ➔ Awan ➔ Hujan! (+60 Mata)";
+        document.getElementById('misi3-status').className = "text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full";
+        document.getElementById('misi3-status').textContent = "Selesai ⭐";
+        addPoints(60);
+        unlockBadge(3);
+      } else {
+        playSound('wrong');
+        feedback.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-rose-100 text-rose-800 border border-rose-300";
+        feedback.innerHTML = "❌ Urutan belum tepat. Ingat: Air mesti dipanaskan matahari dahulu menjadi wap air sebelum membentuk awan! Tekan 'Tetapkan Semula' dan cuba lagi.";
+      }
+    }
+
+    const quizQuestions = [
+      // Soalan 1-7: SP 9.1.1 Sumber Air Semula Jadi
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "1. Manakah antara berikut merupakan sumber air semula jadi yang turun dari langit?",
+        opts: ["A. Air paip rumah", "B. Hujan", "C. Kolam renang"],
+        ans: 1,
+        exp: "Hujan turun dari awan secara semula jadi ke bumi tanpa bantuan mesin manusia."
+      },
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "2. Apakah nama kawasan air masin yang amat luas di muka bumi?",
+        opts: ["A. Laut", "B. Tasik", "C. Sungai"],
+        ans: 0,
+        exp: "Laut adalah takungan air masin yang sangat luas meliputi sebahagian besar bumi."
+      },
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "3. Kawasan takungan air tawar yang luas dan dikelilingi oleh daratan dinamakan sebagai...",
+        opts: ["A. Parit", "B. Tasik", "C. Longkang"],
+        ans: 1,
+        exp: "Tasik ialah takungan air semula jadi yang tenang dan dikelilingi daratan."
+      },
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "4. Air bawah tanah yang memancut atau keluar ke permukaan bumi secara semula jadi dikenali sebagai...",
+        opts: ["A. Mata air", "B. Air paip", "C. Air tangki"],
+        ans: 0,
+        exp: "Mata air berasal dari air bawah tanah yang keluar melalui celahan batuan bumi."
+      },
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "5. Antara berikut, yang manakah BUKAN sumber air semula jadi?",
+        opts: ["A. Sungai", "B. Hujan", "C. Kolam renang buatan manusia"],
+        ans: 2,
+        exp: "Kolam renang dibina oleh manusia, oleh itu ia bukan sumber air semula jadi."
+      },
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "6. Air sungai biasanya mengandungi rasa...",
+        opts: ["A. Tawar", "B. Masin", "C. Pahit"],
+        ans: 0,
+        exp: "Air sungai dan tasik adalah air tawar, manakala air laut berasa masin."
+      },
+      {
+        topic: "9.1.1 Sumber Air Semula Jadi",
+        q: "7. Mengapakah air laut berasa masin?",
+        opts: ["A. Kerana manusia menuang garam", "B. Kerana mengandungi kandungan garam mineral semula jadi", "C. Kerana ikan berenang di dalamnya"],
+        ans: 1,
+        exp: "Air laut melarutkan pelbagai mineral dan garam batuan bumi secara semula jadi."
+      },
+
+      // Soalan 8-13: SP 9.1.3 Arah Aliran Air
+      {
+        topic: "9.1.3 Arah Aliran Air",
+        q: "8. Bagaimanakah arah aliran air secara semula jadi?",
+        opts: ["A. Dari tempat rendah ke tempat tinggi", "B. Dari tempat tinggi ke tempat rendah", "C. Tidak tentu arah"],
+        ans: 1,
+        exp: "Daya graviti bumi menarik air mengalir dari tempat tinggi turun ke tempat rendah."
+      },
+      {
+        topic: "9.1.3 Arah Aliran Air",
+        q: "9. Air terjun mengalir dari tebing batu yang tinggi ke kolam di bawahnya kerana...",
+        opts: ["A. Tarikan graviti ke tempat rendah", "B. Ditolak oleh angin sahaja", "C. Ditarik oleh pokok"],
+        ans: 0,
+        exp: "Air terjun adalah contoh jelas air mengalir dari tempat tinggi ke tempat rendah akibat graviti."
+      },
+      {
+        topic: "9.1.3 Arah Aliran Air",
+        q: "10. Air sungai di hulu bukit akhirnya akan mengalir menuju ke mana?",
+        opts: ["A. Kembali ke puncak gunung", "B. Ke muara sungai dan laut", "C. Ke atas awan serta-merta"],
+        ans: 1,
+        exp: "Sungai mengalir dari tanah tinggi merentasi lembah dan berakhir di laut (kawasan rendah)."
+      },
+      {
+        topic: "9.1.3 Arah Aliran Air",
+        q: "11. Apakah yang berlaku jika aliran air longkang atau parit tersumbat dengan sampah sarap?",
+        opts: ["A. Air mengalir lebih laju", "B. Air bertakung dan boleh berlaku banjir kilat", "C. Air menjadi jernih"],
+        ans: 1,
+        exp: "Halangan sampah menyekat laluan air ke tempat rendah lalu menyebabkan banjir."
+      },
+      {
+        topic: "9.1.3 Arah Aliran Air",
+        q: "12. Apabila anda menuang air dari botol ke atas dulang yang condong, air akan mengalir ke...",
+        opts: ["A. Bahagian dulang yang lebih rendah", "B. Bahagian dulang yang lebih tinggi", "C. Diam tidak bergerak"],
+        ans: 0,
+        exp: "Air sentiasa mencari dan mengalir ke aras yang lebih rendah."
+      },
+      {
+        topic: "9.1.3 Arah Aliran Air",
+        q: "13. Mengapakah bumbung rumah dibina condong atau cerun?",
+        opts: ["A. Supaya air hujan mudah mengalir turun ke tanah", "B. Supaya burung boleh berehat", "C. Supaya rumah kelihatan tinggi sahaja"],
+        ans: 0,
+        exp: "Bumbung condong memudahkan air hujan mengalir dari atas (tinggi) ke bawah (rendah)."
+      },
+
+      // Soalan 14-20: SP 9.1.4 Kitar Air Semula Jadi & Kepentingan
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "14. Apakah yang memanaskan air di permukaan laut dan sungai dalam kitar air?",
+        opts: ["A. Cahaya lampu suluh", "B. Haba daripada matahari", "C. Udara malam"],
+        ans: 1,
+        exp: "Matahari membekalkan haba untuk memanaskan air di permukaan bumi."
+      },
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "15. Apabila air dipanaskan, air akan bertukar menjadi...",
+        opts: ["A. Wap air", "B. Ketulan ais", "C. Pasir"],
+        ans: 0,
+        exp: "Air yang dipanaskan akan menyejat dan bertukar wujud menjadi wap air."
+      },
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "16. Di udara tinggi yang sejuk, wap air akan menyejuk dan membentuk...",
+        opts: ["A. Pelangi", "B. Awan", "C. Debu"],
+        ans: 1,
+        exp: "Wap air terkondensasi membentuk titisan air halus yang berkumpul menjadi awan."
+      },
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "17. Apakah yang akan berlaku apabila titisan air di dalam awan menjadi terlalu berat?",
+        opts: ["A. Awan bertukar menjadi batu", "B. Titisan air turun sebagai hujan", "C. Awan terus hilang ke angkasa"],
+        ans: 1,
+        exp: "Awan tebal yang berat tidak mampu menampung air lagi lalu turun sebagai hujan."
+      },
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "18. Apakah maksud 'kitaran' dalam kitar air semula jadi?",
+        opts: ["A. Proses yang berlaku sekali sahaja", "B. Proses yang berulang-ulang tanpa henti", "C. Pergerakan menaiki basikal"],
+        ans: 1,
+        exp: "Kitaran bermaksud proses berulang secara berterusan (Air ➔ Wap ➔ Awan ➔ Hujan ➔ Air)."
+      },
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "19. Apakah kepentingan utama kitar air semula jadi kepada hidupan di bumi?",
+        opts: ["A. Memastikan bekalan air bersih sentiasa ada untuk hidupan", "B. Menjadikan hari sentiasa panas", "C. Supaya laut menjadi kering"],
+        ans: 0,
+        exp: "Kitaran air memastikan sumber air sentiasa diperbaharui untuk manusia, haiwan dan tumbuhan."
+      },
+      {
+        topic: "9.1.4 Kitar Air Semula Jadi",
+        q: "20. Apakah tindakan yang bertanggungjawab untuk menjaga sumber air kita?",
+        opts: ["A. Membuang sisa minyak ke dalam sinki", "B. Menjimatkan penggunaan air dan tidak membuang sampah ke sungai", "C. Membiarkan paip air terbuka sepanjang hari"],
+        ans: 1,
+        exp: "Menjimatkan air dan menjaga kebersihan sungai memastikan bekalan air kita sentiasa selamat dan bersih."
+      }
+    ];
+
+    // State Kuiz
+    let currentQuizIndex = 0;
+    let userQuizAnswers = new Array(quizQuestions.length).fill(null);
+
+    function loadQuizQuestion(index) {
+      const q = quizQuestions[index];
+      document.getElementById('quiz-q-topic').textContent = q.topic;
+      document.getElementById('quiz-question-title').textContent = q.q;
+      document.getElementById('quiz-progress-text').textContent = `${index + 1} / ${quizQuestions.length}`;
+      
+      const pct = ((index + 1) / quizQuestions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+      const optionsBox = document.getElementById('quiz-options-container');
+      optionsBox.innerHTML = '';
+
+      const explanationBox = document.getElementById('quiz-explanation');
+      explanationBox.classList.add('hidden');
+
+      const answered = userQuizAnswers[index] !== null;
+
+      q.opts.forEach((optText, optIdx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-between ";
+
+        if (!answered) {
+          btn.className += "border-slate-200 bg-white hover:border-sky-400 hover:bg-sky-50 text-slate-700";
+          btn.onclick = () => selectQuizAnswer(optIdx);
+        } else {
+          // Jika sudah dijawab
+          if (optIdx === q.ans) {
+            btn.className += "border-emerald-500 bg-emerald-100 text-emerald-900";
+            btn.innerHTML = `<span>${optText}</span> <span class="text-emerald-600 text-lg">✔</span>`;
+          } else if (userQuizAnswers[index] === optIdx) {
+            btn.className += "border-rose-400 bg-rose-100 text-rose-900";
+            btn.innerHTML = `<span>${optText}</span> <span class="text-rose-600 text-lg">✖</span>`;
+          } else {
+            btn.className += "border-slate-200 bg-slate-50 text-slate-400 opacity-60";
+            btn.textContent = optText;
+          }
+        }
+
+        if (!answered) {
+          btn.textContent = optText;
+        }
+
+        optionsBox.appendChild(btn);
+      });
+
+      if (answered) {
+        explanationBox.classList.remove('hidden');
+        const isRight = userQuizAnswers[index] === q.ans;
+        explanationBox.className = `p-4 rounded-2xl text-sm font-semibold border ${
+          isRight ? 'bg-emerald-50 text-emerald-900 border-emerald-200' : 'bg-rose-50 text-rose-900 border-rose-200'
+        }`;
+        explanationBox.innerHTML = `<strong>${isRight ? 'Jawapan Tepat! 🎉' : 'Kurang Tepat 💡'}</strong>: ${q.exp}`;
+      }
+
+      // Butang Navigasi
+      document.getElementById('quiz-prev-btn').disabled = (index === 0);
+      document.getElementById('quiz-next-btn').disabled = !answered;
+      if (index === quizQuestions.length - 1 && answered) {
+        document.getElementById('quiz-next-btn').textContent = "Lihat Keputusan & Sijil 🏆";
+      } else {
+        document.getElementById('quiz-next-btn').textContent = "Soalan Seterusnya ➡️";
+      }
+    }
+
+    function selectQuizAnswer(optIdx) {
+      userQuizAnswers[currentQuizIndex] = optIdx;
+      const q = quizQuestions[currentQuizIndex];
+
+      if (optIdx === q.ans) {
+        playSound('correct');
+        addPoints(20);
+      } else {
+        playSound('wrong');
+      }
+
+      loadQuizQuestion(currentQuizIndex);
+    }
+
+    function prevQuizQuestion() {
+      if (currentQuizIndex > 0) {
+        playSound('pop');
+        currentQuizIndex--;
+        loadQuizQuestion(currentQuizIndex);
+      }
+    }
+
+    function nextQuizQuestion() {
+      playSound('pop');
+      if (currentQuizIndex < quizQuestions.length - 1) {
+        currentQuizIndex++;
+        loadQuizQuestion(currentQuizIndex);
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      playSound('badge');
+      triggerConfetti();
+
+      document.getElementById('quiz-question-box').classList.add('hidden');
+      document.getElementById('quiz-result-box').classList.remove('hidden');
+
+      // Kira Markah
+      let correctCount = 0;
+      quizQuestions.forEach((q, idx) => {
+        if (userQuizAnswers[idx] === q.ans) correctCount++;
+      });
+
+      document.getElementById('quiz-final-score').textContent = correctCount;
+
+      let tp = "TP 3";
+      let msg = "Tahniah! Teruskan usaha mengulang kaji bersama Cikgu Fareez.";
+      if (correctCount >= 18) {
+        tp = "TP 6 (Cemerlang)";
+        msg = "Hebat dan Luar Biasa! Anda menguasai keseluruhan unit Air dengan cemerlang!";
+        unlockBadge(4);
+      } else if (correctCount >= 14) {
+        tp = "TP 5 (Sangat Baik)";
+        msg = "Pencapaian yang sangat baik! Anda memahami konsep air dengan mantap.";
+        unlockBadge(4);
+      } else if (correctCount >= 10) {
+        tp = "TP 4 (Baik)";
+        msg = "Bagus! Anda telah menguasai sebahagian besar fakta asas air.";
+      }
+
+      document.getElementById('quiz-tp-level').textContent = tp;
+      document.getElementById('quiz-result-msg').textContent = msg;
+
+      // Tarikh Sijil
+      const today = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('cert-date').textContent = today;
+    }
+
+    function downloadCertificateImage() {
+      playSound('pop');
+
+      // Ambil maklumat murid
+      const rawName = document.getElementById('cert-student-name').value.trim();
+      const studentName = rawName || "Wira Sains Cilik";
+      const finalScore = document.getElementById('quiz-final-score').textContent || "0";
+      const tpLevel = document.getElementById('quiz-tp-level').textContent || "TP 5";
+      const certDate = document.getElementById('cert-date').textContent || new Date().toLocaleDateString('ms-MY');
+
+      // Cipta canvas resolusi tinggi (1200 x 840 px)
+      const canvas = document.createElement('canvas');
+      const width = 1200;
+      const height = 840;
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Latar Belakang Gradien Lembut (Krim Emas & Biru Air)
+      const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+      bgGrad.addColorStop(0, '#fefce8');
+      bgGrad.addColorStop(0.5, '#fffbeb');
+      bgGrad.addColorStop(1, '#e0f2fe');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      // 2. Corak Bingkai Emas Berganda (Double Gold Border)
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 14;
+      ctx.strokeRect(30, 30, width - 60, height - 60);
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(48, 48, width - 96, height - 96);
+
+      // Sudut Hiasan (Corner Decors)
+      const drawCorner = (x, y) => {
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.arc(x, y, 14, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0284c7';
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawCorner(48, 48);
+      drawCorner(width - 48, 48);
+      drawCorner(48, height - 48);
+      drawCorner(width - 48, height - 48);
+
+      // 3. Header Lencana & Sijil
+      ctx.fillStyle = '#b45309';
+      ctx.font = 'bold 24px Quicksand, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('⭐ SIJIL PENGHARGAAN DIGITAL SAINS TAHUN 2 ⭐', width / 2, 110);
+
+      // Tajuk Makmal
+      ctx.fillStyle = '#0369a1';
+      ctx.font = 'bold 44px Fredoka, cursive, sans-serif';
+      ctx.fillText('MAKMAL SAINS VIRTUAL CIKGU FAREEZ', width / 2, 175);
+
+      // Garisan Pembahagi Hiasan
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(350, 195);
+      ctx.lineTo(850, 195);
+      ctx.stroke();
+
+      // Pernyataan Perakuan
+      ctx.fillStyle = '#475569';
+      ctx.font = '500 24px Quicksand, sans-serif';
+      ctx.fillText('Dengan ini memperakui bahawa penjelajah sains cilik yang hebat:', width / 2, 245);
+
+      // 4. Nama Murid (Besar dan Menonjol)
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 54px Fredoka, cursive, sans-serif';
+      ctx.fillText(studentName, width / 2, 320);
+
+      // Garis Bawah Nama
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      const textMetrics = ctx.measureText(studentName);
+      const halfWidth = Math.max(textMetrics.width / 2 + 30, 200);
+      ctx.moveTo(width / 2 - halfWidth, 340);
+      ctx.lineTo(width / 2 + halfWidth, 340);
+      ctx.stroke();
+
+      // Keterangan Penguasaan
+      ctx.fillStyle = '#334155';
+      ctx.font = '600 24px Quicksand, sans-serif';
+      ctx.fillText('Telah berjaya menamatkan Pentaksiran Unit 9.1: Air (KSSR Semakan)', width / 2, 395);
+      ctx.font = '500 20px Quicksand, sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('Merangkumi Sumber Air Semulajadi, Arah Aliran Air, dan Kitar Air Semulajadi.', width / 2, 430);
+
+      // 5. Kad Prestasi (Skor & TP)
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#bae6fd';
+      ctx.lineWidth = 3;
+      const cardX = 320;
+      const cardY = 475;
+      const cardW = 560;
+      const cardH = 110;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(cardX, cardY, cardW, cardH, 20) : ctx.rect(cardX, cardY, cardW, cardH);
+      ctx.fill();
+      ctx.stroke();
+
+      // Teks Skor & TP dalam Kad
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#0284c7';
+      ctx.font = 'bold 18px Quicksand, sans-serif';
+      ctx.fillText('SKOR PENTAKSIRAN', 440, 515);
+      ctx.fillStyle = '#0369a1';
+      ctx.font = 'bold 36px Fredoka, sans-serif';
+      ctx.fillText(`${finalScore} / 20`, 440, 560);
+
+      // Garis tengah kad
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(600, 490);
+      ctx.lineTo(600, 570);
+      ctx.stroke();
+
+      ctx.fillStyle = '#059669';
+      ctx.font = 'bold 18px Quicksand, sans-serif';
+      ctx.fillText('TAHAP PENGUASAAN', 760, 515);
+      ctx.fillStyle = '#047857';
+      ctx.font = 'bold 30px Fredoka, sans-serif';
+      ctx.fillText(tpLevel, 760, 558);
+
+      // 6. Cop Mohor Bulat Emas (Seal)
+      const sealX = 220;
+      const sealY = 690;
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, 52, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#d97706';
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, 44, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 13px Quicksand, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('TERBAIK', sealX, sealY - 14);
+      ctx.font = '22px sans-serif';
+      ctx.fillText('🏆', sealX, sealY + 10);
+      ctx.font = 'bold 12px Quicksand, sans-serif';
+      ctx.fillText('SAINS T2', sealX, sealY + 30);
+
+      // 7. Tandatangan & Tarikh Bahagian Bawah
+      // Tarikh
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 20px Quicksand, sans-serif';
+      ctx.fillText(`Tarikh: ${certDate}`, 380, 715);
+
+      // Tandatangan Guru
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 22px Fredoka, sans-serif';
+      ctx.fillText('Cikgu Fareez', width - 180, 695);
+      ctx.font = '500 18px Quicksand, sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('Guru Pembimbing Sains', width - 180, 725);
+
+      // Garisan tandatangan
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(width - 340, 670);
+      ctx.lineTo(width - 150, 670);
+      ctx.stroke();
+
+      // Hasilkan fail imej PNG
+      const imageURL = canvas.toDataURL('image/png');
+      const sanitizedName = studentName.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filename = `Sijil_Sains_T2_${sanitizedName}.png`;
+
+      // Kemas kini pautan modal
+      const modal = document.getElementById('cert-image-modal');
+      const imgEl = document.getElementById('generated-cert-img');
+      const dlLink = document.getElementById('cert-download-link');
+
+      imgEl.src = imageURL;
+      dlLink.href = imageURL;
+      dlLink.download = filename;
+
+      // Cuba lakukan muat turun secara langsung
+      try {
+        const tempLink = document.createElement('a');
+        tempLink.href = imageURL;
+        tempLink.download = filename;
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+      } catch (err) {
+        console.warn("Direct download trigger prevented:", err);
+      }
+
+      // Paparkan juga modal pratonton untuk kemudahan pengguna telefon pintar (touch & hold to save)
+      modal.classList.remove('hidden');
+    }
+
+    function closeCertModal() {
+      playSound('pop');
+      document.getElementById('cert-image-modal').classList.add('hidden');
+    }
+
+    function restartQuiz() {
+      playSound('pop');
+      currentQuizIndex = 0;
+      userQuizAnswers = new Array(quizQuestions.length).fill(null);
+      document.getElementById('quiz-result-box').classList.add('hidden');
+      document.getElementById('quiz-question-box').classList.remove('hidden');
+      loadQuizQuestion(0);
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#38bdf8', '#0284c7', '#34d399', '#fbbf24', '#f472b6', '#a855f7'];
+
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.7) * 16,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          gravity: 0.28,
+          opacity: 1
+        });
+      }
+
+      let animationFrame;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.opacity -= 0.012;
+
+          if (p.opacity > 0) {
+            alive = true;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+
+        if (alive) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+      animate();
+    }
+
+    window.onload = function() {
+      initMisi3();
+      loadQuizQuestion(0);
+
+      // Responsif Canvas bila skrin diubah
+      window.addEventListener('resize', () => {
+        const canvas = document.getElementById('confetti-canvas');
+        if (canvas) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+      });
+    };
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Global Environment Setup
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'cikgu-fareez-sains-t2';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+      apiKey: "mock-key",
+      authDomain: "mock-domain.firebaseapp.com",
+      projectId: "mock-project",
+      storageBucket: "mock.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let scoreboardData = [];
+
+    async function setupFirebase() {
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+
+        // Prioriti Token Kustom kemudian Log Masuk Tanpa Nama (Rule 3)
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            currentUser = user;
+            updateConnectionStatus(true);
+            listenToLiveScoreboard();
+          } else {
+            currentUser = null;
+            updateConnectionStatus(false);
+          }
+        });
+      } catch (err) {
+        console.warn("Firebase initialization note (offline/mock fallback):", err);
+        updateConnectionStatus(false);
+        // Fallback pameran data jika di luar sambungan Firestore
+        renderScoreboardUI([]);
+      }
+    }
+
+    function updateConnectionStatus(isConnected) {
+      const statusText = document.getElementById('live-status-text');
+      const pingDot = document.getElementById('live-ping-dot');
+      const statusDot = document.getElementById('live-status-dot');
+
+      if (!statusText || !pingDot || !statusDot) return;
+
+      if (isConnected) {
+        statusText.textContent = "Siaran Langsung Aktif";
+        statusText.parentElement.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 flex items-center gap-1.5";
+        pingDot.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+        statusDot.className = "relative inline-flex rounded-full h-2 w-2 bg-emerald-500";
+      } else {
+        statusText.textContent = "Mod Setempat (Simpan Dalaman)";
+        statusText.parentElement.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 flex items-center gap-1.5";
+        pingDot.className = "hidden";
+        statusDot.className = "relative inline-flex rounded-full h-2 w-2 bg-amber-500";
+      }
+    }
+
+    function listenToLiveScoreboard() {
+      if (!currentUser || !db) return;
+
+      // RULE 1: Laluan Data Awam /artifacts/{appId}/public/data/{collectionName}
+      // RULE 2: Tanpa kueri rumit; susun dalam memori JavaScript
+      const scoreboardCol = collection(db, 'artifacts', appId, 'public', 'data', 'scoreboard');
+
+      onSnapshot(
+        scoreboardCol,
+        (snapshot) => {
+          const rawEntries = [];
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            rawEntries.push({ id: docSnap.id, ...data });
+          });
+
+          // Susun mengikut mata keseluruhan & skor kuiz tertinggi dalam JS
+          rawEntries.sort((a, b) => {
+            if ((b.score || 0) !== (a.score || 0)) {
+              return (b.score || 0) - (a.score || 0);
+            }
+            return (b.quizScore || 0) - (a.quizScore || 0);
+          });
+
+          scoreboardData = rawEntries;
+          renderScoreboardUI(scoreboardData);
+          updateTeacherStats(scoreboardData);
+        },
+        (error) => {
+          console.warn("Firestore onSnapshot error callback:", error);
+          updateConnectionStatus(false);
+        }
+      );
+    }
+
+    function renderScoreboardUI(entries) {
+      const tbody = document.getElementById('scoreboard-table-body');
+      if (!tbody) return;
+
+      if (!entries || entries.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-slate-400">
+              <span class="text-3xl block mb-2">⭐</span>
+              <p class="font-bold text-slate-600">Belum ada rekod dihantar.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Jadilah murid pertama yang menghantar markah kuiz ke papan skor!</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      entries.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-sky-50/50 transition font-semibold";
+
+        // Gaya pingat untuk top 3
+        let rankBadge = `<span class="font-bold text-slate-700">#${index + 1}</span>`;
+        if (index === 0) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 text-amber-800 font-black text-sm shadow-sm border border-amber-300">🥇 1</span>`;
+        } else if (index === 1) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-200 text-slate-700 font-black text-sm shadow-sm border border-slate-300">🥈 2</span>`;
+        } else if (index === 2) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-700/20 text-amber-900 font-black text-sm shadow-sm border border-amber-700/30">🥉 3</span>`;
+        }
+
+        const isMe = currentUser && currentUser.uid === item.userId;
+        const studentNameHtml = `
+          <div class="flex items-center gap-2">
+            <span class="font-bold ${isMe ? 'text-sky-700' : 'text-slate-800'}">${escapeHtml(item.studentName || 'Murid Sains')}</span>
+            ${isMe ? '<span class="text-[10px] bg-sky-100 text-sky-700 font-black px-1.5 py-0.2 rounded-md">Anda</span>' : ''}
+          </div>
+        `;
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 text-center">${rankBadge}</td>
+          <td class="py-3 px-4">${studentNameHtml}</td>
+          <td class="py-3 px-3 text-center text-sky-700 font-black">⭐ ${item.score || 0}</td>
+          <td class="py-3 px-3 text-center font-bold text-purple-900 bg-purple-50/40 rounded-xl">${item.quizScore || 0}/20</td>
+          <td class="py-3 px-3 text-center">
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold ${
+              (item.tpLevel || '').includes('TP 6') ? 'bg-emerald-100 text-emerald-800' :
+              (item.tpLevel || '').includes('TP 5') ? 'bg-teal-100 text-teal-800' : 'bg-sky-100 text-sky-800'
+            }">${escapeHtml(item.tpLevel || 'TP 4')}</span>
+          </td>
+          <td class="py-3 px-3 text-center text-xs font-bold text-amber-700">🎖️ ${item.badgesCount || 0}/4</td>
+          <td class="py-3 px-4 text-right">
+            <div class="text-[11px] text-slate-500">${escapeHtml(item.dateStr || 'Hari ini')}</div>
+            <div class="text-[9px] text-slate-400 font-mono" title="ID Pengguna: ${item.userId}">ID: ${escapeHtml(item.userId || '-')}</div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateTeacherStats(entries) {
+      const totalStudentsEl = document.getElementById('stat-total-students');
+      const avgScoreEl = document.getElementById('stat-avg-score');
+      const tp6CountEl = document.getElementById('stat-tp6-count');
+      const topScorerEl = document.getElementById('stat-top-scorer');
+
+      if (!totalStudentsEl) return;
+
+      if (!entries || entries.length === 0) {
+        totalStudentsEl.textContent = '0';
+        avgScoreEl.innerHTML = `0 <span class="text-sm font-normal text-slate-500">/ 20</span>`;
+        tp6CountEl.textContent = '0';
+        topScorerEl.textContent = '-';
+        return;
+      }
+
+      totalStudentsEl.textContent = entries.length;
+
+      // Purata skor kuiz
+      const totalQuiz = entries.reduce((acc, curr) => acc + (Number(curr.quizScore) || 0), 0);
+      const avg = (totalQuiz / entries.length).toFixed(1);
+      avgScoreEl.innerHTML = `${avg} <span class="text-sm font-normal text-slate-500">/ 20</span>`;
+
+      // Bilangan TP 5 & TP 6
+      const masteryHigh = entries.filter(e => (e.tpLevel || '').includes('TP 5') || (e.tpLevel || '').includes('TP 6')).length;
+      tp6CountEl.textContent = masteryHigh;
+
+      // Juara skor tertinggi
+      topScorerEl.textContent = entries[0]?.studentName || '-';
+    }
+
+    window.filterScoreboardList = function() {
+      const term = (document.getElementById('scoreboard-search')?.value || '').toLowerCase().trim();
+      if (!term) {
+        renderScoreboardUI(scoreboardData);
+        return;
+      }
+      const filtered = scoreboardData.filter(item => {
+        return (item.studentName || '').toLowerCase().includes(term) || (item.userId || '').toLowerCase().includes(term);
+      });
+      renderScoreboardUI(filtered);
+    };
+
+    window.submitCurrentScoreToLeaderboard = async function() {
+      const submitBtn = document.getElementById('send-live-score-btn');
+      const notice = document.getElementById('live-submit-notice');
+
+      const rawName = document.getElementById('cert-student-name')?.value.trim();
+      const studentName = rawName || "Wira Sains Cilik";
+      const finalScore = Number(document.getElementById('quiz-final-score')?.textContent) || 0;
+      const tpLevel = document.getElementById('quiz-tp-level')?.textContent || "TP 4";
+      const badgesCount = earnedBadges.size;
+      const totalPts = currentScore;
+      const today = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>⏳</span> Menghantar...`;
+      }
+
+      if (!currentUser || !db) {
+        // Fallback simpan setempat
+        const localEntry = {
+          id: 'local-' + Date.now(),
+          userId: 'user-setempat',
+          studentName,
+          score: totalPts,
+          quizScore: finalScore,
+          tpLevel,
+          badgesCount,
+          dateStr: today,
+          timestamp: Date.now()
+        };
+        scoreboardData.unshift(localEntry);
+        renderScoreboardUI(scoreboardData);
+        updateTeacherStats(scoreboardData);
+
+        if (notice) {
+          notice.className = "max-w-md mx-auto p-3 rounded-2xl text-xs font-bold text-center bg-emerald-100 text-emerald-800 border border-emerald-300 block";
+          notice.innerHTML = `🎉 Skor ${escapeHtml(studentName)} (${totalPts} mata) berjaya direkodkan ke papan skor setempat!`;
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>✔</span> Skor Telah Dihantar!`;
+        }
+        playSound('correct');
+        return;
+      }
+
+      try {
+        // RULE 1 & RULE 3: Laluan Awam & ID pengguna
+        const userId = currentUser.uid;
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'scoreboard', userId);
+
+        await setDoc(docRef, {
+          userId: userId,
+          studentName: studentName,
+          score: totalPts,
+          quizScore: finalScore,
+          tpLevel: tpLevel,
+          badgesCount: badgesCount,
+          dateStr: today,
+          timestamp: Date.now()
+        }, { merge: true });
+
+        if (notice) {
+          notice.className = "max-w-md mx-auto p-3 rounded-2xl text-xs font-bold text-center bg-emerald-100 text-emerald-800 border border-emerald-300 block";
+          notice.innerHTML = `🚀 Tahniah ${escapeHtml(studentName)}! Skor anda telah berjaya dimuat naik ke Papan Skor Langsung Cikgu Fareez!`;
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>✔</span> Berjaya Dihantar!`;
+        }
+        playSound('correct');
+        triggerConfetti();
+
+        // Buka tab papan skor secara lembut selepas 1.2 saat
+        setTimeout(() => {
+          switchTab('skor');
+        }, 1200);
+      } catch (err) {
+        console.error("Gagal menghantar skor:", err);
+        if (notice) {
+          notice.className = "max-w-md mx-auto p-3 rounded-2xl text-xs font-bold text-center bg-rose-100 text-rose-800 border border-rose-300 block";
+          notice.innerHTML = `⚠️ Gagal menghantar ke pelayan. Sila pastikan sambungan internet aktif dan cuba lagi.`;
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>🚀</span> Cuba Hantar Semula`;
+        }
+        playSound('wrong');
+      }
+    };
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Mulakan persediaan Firebase semasa skrip dimuatkan
+    setupFirebase();
+  </script>
+</body>
+</html>
